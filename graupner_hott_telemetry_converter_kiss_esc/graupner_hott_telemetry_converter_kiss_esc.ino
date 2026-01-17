@@ -97,7 +97,7 @@ void receiveTelemtrie() {
       SerialBuf[counter] = data;
       if (max_time < time_since_last) max_time = time_since_last;
 #ifdef DEBUG_PRINT
-      Serial.println(max_time);
+//      Serial.println(max_time);
 #endif
 //      delayMicroseconds(50);
       counter++;
@@ -141,16 +141,36 @@ void receiveTelemtrie() {
   if (crc8 != 0 && crc8 == TestBuf[9]) {
 #ifdef DEBUG_PRINT
     Serial.print(", Good");
-    Serial.println("");
+//    Serial.println("");
 #endif
     int16_t volt = (TestBuf[1] << 8) | TestBuf[2];
     int16_t current = (TestBuf[3] << 8) | TestBuf[4];
     int16_t rpm = (TestBuf[7] << 8) | TestBuf[8];
+    float voltage = (float)((float)volt / 100);
     server.setTemperature(HOTT_ESC_TEMPERATURE, 20 + TestBuf[0]);
-    server.setVoltage(HOTT_MAIN_VOLTAGE, (float)((float)volt / 100));
+    server.setVoltage(HOTT_MAIN_VOLTAGE, voltage);
     server.setCurrent(HOTT_MAIN_CURRENT, (float)((float)current / 100));
     server.setCapacity((TestBuf[5] << 8) | TestBuf[6]);
     server.setRPM(HOTT_PRIMARY_RPM, rpm);
+
+#ifdef DEBUG_PRINT
+  Serial.print(", ");
+  Serial.print(server.getBattAlarmV());
+  Serial.print(", ");
+  Serial.println(voltage);
+#endif
+    if ( voltage < server.getBattAlarmV() ) {
+      server.setWarning(HOTT_ALARM_SENSOR1_VOLTAGE_MIN);
+#ifdef DEBUG_PRINT
+      Serial.println("******** ALARM *********");
+#endif
+    } else {
+      server.setWarning(HOTT_ALARM_NONE);
+#ifdef DEBUG_PRINT
+      Serial.println("******** OK OK OK OK OK  *********");
+#endif
+    }
+
   } else {
 #ifdef DEBUG_PRINT
     Serial.print(", Failed, ");

@@ -120,7 +120,6 @@ void HoTTServer::hottBuildAscii(byte button) {
 	hottPrint(2, 1, "NUM MOTOR POLES");
 	hottPrint(3, 1, "ALARM VOLT");
 	hottPrint(3, 20, "V");
-	hottPrint(4, 1,	"-not implemented yet");
 	// credits :-)
 	hottPrint(7, 1, "(C) ARILD LANGSEID");
 
@@ -767,6 +766,10 @@ bool HoTTServer::processRequest() {
 		}
 	}
 	return requestProcessed;
+}
+
+float HoTTServer::getBattAlarmV() {
+	return sSettings.battAlarmV;
 }
 
 void HoTTServer::setWarning(HOTTAlarm_e warningID) {

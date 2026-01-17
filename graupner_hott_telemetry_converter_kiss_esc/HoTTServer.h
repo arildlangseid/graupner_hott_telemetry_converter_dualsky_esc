@@ -298,6 +298,8 @@ public:
 	int hottPrint(int line, int col, char* text, boolean inv=false);
 	void hottBuildAscii(byte button);
 
+	float getBattAlarmV();
+
 	void setWarning(HOTTAlarm_e warningID);
 	void setInverted(uint8_t invertedID, uint8_t inverted);
 	void setCapacity(uint16_t capacity);
