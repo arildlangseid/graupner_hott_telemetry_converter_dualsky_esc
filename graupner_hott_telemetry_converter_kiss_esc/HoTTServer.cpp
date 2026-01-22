@@ -35,6 +35,7 @@ void HoTTServer::setupEEPROM(void) {
     // set default values in case eeprom is empty/garbage as in first try
 		sSettings.numPoles=14;
 		sSettings.battAlarmV=9.6;
+		sSettings.tempAlarmC=60;
     sSettings.serial=SERIAL_NUMBER;
   }
 }
@@ -74,6 +75,10 @@ void HoTTServer::clearAll() {
 	memset(&hottASCII.text[0], ' ', 21 * 8);
 }
 
+void HoTTServer::hottWrite(int line, int col, char text) {
+	hottASCII.text[(line * 21) + col] = text;
+}
+
 /*
  * Prepares text for sending it to the HoTT display
  * returns the position of the last char printed
@@ -81,7 +86,7 @@ void HoTTServer::clearAll() {
 int HoTTServer::hottPrint(int line, int col, char* text, boolean inv = false) {
 	int i = 0;
 	while (text[i] != '\0' && i < 21 - col) {
-		hottASCII.text[(line * 21) + col + i] = inv ? text[i] | 0x80 : text[i];
+		hottWrite(line, col + i, inv ? text[i] | 0x80 : text[i]);
 		i++;
 	}
 	return i + col;
@@ -120,8 +125,11 @@ void HoTTServer::hottBuildAscii(byte button) {
 	hottPrint(2, 1, "NUM MOTOR POLES");
 	hottPrint(3, 1, "ALARM VOLT");
 	hottPrint(3, 20, "V");
+	hottPrint(4, 1, "ALARM TEMP");
+	hottWrite(4, 19, char(96)); // 0xe0
+	hottPrint(4, 20, "C");
 	// credits :-)
-	hottPrint(7, 1, "(C) ARILD LANGSEID");
+	hottPrint(7, 1, "ARILD LANGSEID 2026");
 
 	int buttonFeedBackLine = 5;
 
@@ -136,6 +144,11 @@ void HoTTServer::hottBuildAscii(byte button) {
 				battAlarmEdit = false;
 				sSettings.battAlarmV = battAlarmBackupValue;
 			}
+			if (tempAlarmEdit) {
+				tempAlarmEdit = false;
+				sSettings.tempAlarmC = tempAlarmBackupValue;
+			}
+			
 			//hottPrint(buttonFeedBackLine, 10, "ESC");
 			hottASCII.escape = 0x01;
 			break;
@@ -145,7 +158,9 @@ void HoTTServer::hottBuildAscii(byte button) {
 				sSettings.numPoles += 2;
 			} else if (battAlarmEdit && sSettings.battAlarmV < 25.2) {
 				sSettings.battAlarmV += 0.1;
-			} else if (curserPos < 3) curserPos++;
+			} else if (tempAlarmEdit && sSettings.tempAlarmC < 90) {
+				sSettings.tempAlarmC += 1;
+			} else if (curserPos < 4) curserPos++;
 			hottPrint(buttonFeedBackLine, 10, "INC");
 			break;
 		case 0x0B:
@@ -154,6 +169,8 @@ void HoTTServer::hottBuildAscii(byte button) {
 				sSettings.numPoles -= 2;
 			} else if (battAlarmEdit && sSettings.battAlarmV > 3.0) {
 				sSettings.battAlarmV -= 0.1;
+			} else if (tempAlarmEdit && sSettings.tempAlarmC > 10.0) {
+				sSettings.tempAlarmC -= 1;
 			} else if (curserPos > 2) curserPos--;
 			hottPrint(buttonFeedBackLine, 10, "DEC");
 			break;
@@ -173,6 +190,11 @@ void HoTTServer::hottBuildAscii(byte button) {
 				eeprom_write_block((const void*)&sSettings, (void*)0, sizeof(sSettings));
 				break;
 			}
+			if (tempAlarmEdit) {
+				tempAlarmEdit = false;
+				eeprom_write_block((const void*)&sSettings, (void*)0, sizeof(sSettings));
+				break;
+			}
 			if (curserPos == 2) {
 				numPolesEdit = true;
 				numPolesBackupValue = sSettings.numPoles;
@@ -180,6 +202,10 @@ void HoTTServer::hottBuildAscii(byte button) {
 			if (curserPos == 3) {
 				battAlarmEdit = true;
 				battAlarmBackupValue = sSettings.battAlarmV;
+			}
+			if (curserPos == 4) {
+				tempAlarmEdit = true;
+				tempAlarmBackupValue = sSettings.tempAlarmC;
 			}
 
 			hottPrint(buttonFeedBackLine, 10, "SET");
@@ -203,6 +229,11 @@ void HoTTServer::hottBuildAscii(byte button) {
 	// print Voltage alarm level
 	dtostrf(sSettings.battAlarmV, 4, 1, buffer);
 	hottPrint(3, 16, buffer, battAlarmEdit);
+
+	// print Temp alarm level
+	float tempAlarmCFloat = sSettings.tempAlarmC;
+	dtostrf(sSettings.tempAlarmC, 2, 0, buffer);
+	hottPrint(4, 17, buffer, tempAlarmEdit);
 
 	hottPrint(curserPos, 0, ">");
 }

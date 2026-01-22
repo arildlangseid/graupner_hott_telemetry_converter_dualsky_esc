@@ -178,6 +178,7 @@ typedef enum {
 typedef struct {
 		uint8_t numPoles;
 		float battAlarmV;
+		uint8_t tempAlarmC;
     unsigned long serial;
 } Settings;
 
@@ -284,6 +285,8 @@ private:
 	bool 	numPolesEdit = false;
 	float battAlarmBackupValue = 0;
 	bool battAlarmEdit = false;
+	float tempAlarmBackupValue = 0;
+	bool tempAlarmEdit = false;
 public:
 	HoTTServer(uint8_t rxPin, uint8_t txPin);
 	
@@ -295,6 +298,7 @@ public:
 
 	void clearLine(int line);
 	void clearAll();
+	void hottWrite(int line, int col, char text);
 	int hottPrint(int line, int col, char* text, boolean inv=false);
 	void hottBuildAscii(byte button);
 
