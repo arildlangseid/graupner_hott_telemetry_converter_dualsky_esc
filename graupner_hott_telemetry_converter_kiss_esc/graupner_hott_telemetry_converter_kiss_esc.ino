@@ -1,6 +1,6 @@
 #include "HoTTServer.h"
 
-//#define DEBUG_PRINT
+#define DEBUG_PRINT
 
 // KISS Telemetry in port
 HardwareSerial &dsSerial = Serial1;
@@ -13,9 +13,7 @@ HardwareSerial &dsSerial = Serial1;
 static unsigned long timeHoTT_update = 0;
 
 #define HOTT_RX 10
-#define HOTT_TX 11
-//#define HOTT_RX 13
-//#define HOTT_TX 5
+#define HOTT_TX  9
 
 HoTTServer server(HOTT_RX, HOTT_TX);  // rx, tx
 
@@ -89,7 +87,7 @@ void receiveTelemtrie() {
   unsigned long time_since_last = 0;
   unsigned long time_timeout = time_start + 35000;
   unsigned long max_time = 0;
-  while (counter < SERIAL_BUF_LEN && time_now < time_timeout) {
+  while (counter < SERIAL_BUF_LEN && micros() < time_timeout) {
     if (dsSerial.available()) {
       time_now = micros();
       time_since_last = time_now - time_last;
