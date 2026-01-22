@@ -1,6 +1,6 @@
 #include "HoTTServer.h"
 
-#define DEBUG_PRINT
+//#define DEBUG_PRINT
 
 // KISS Telemetry in port
 HardwareSerial &dsSerial = Serial1;
@@ -13,7 +13,7 @@ HardwareSerial &dsSerial = Serial1;
 static unsigned long timeHoTT_update = 0;
 
 #define HOTT_RX 10
-#define HOTT_TX  9
+#define HOTT_TX 9
 
 HoTTServer server(HOTT_RX, HOTT_TX);  // rx, tx
 
@@ -97,12 +97,12 @@ void receiveTelemtrie() {
 #ifdef DEBUG_PRINT
 //      Serial.println(max_time);
 #endif
-//      delayMicroseconds(50);
+      //      delayMicroseconds(50);
       counter++;
     }
     if (counter > KISS_PROTOCOL_LEN && max_time > KISS_FRAME_MIN && max_time < KISS_FRAME_MAX) {
       counter--;
-/*
+      /*
       Serial.print("Break: ");
       Serial.print(counter);
       Serial.print(", ");
@@ -115,14 +115,18 @@ void receiveTelemtrie() {
   }
 
   if (counter >= KISS_PROTOCOL_LEN && max_time > KISS_FRAME_MIN && max_time < KISS_FRAME_MAX) {
-    for (int i = 0; i<KISS_PROTOCOL_LEN; i++) {
+    for (int i = 0; i < KISS_PROTOCOL_LEN; i++) {
       TestBuf[i] = SerialBuf[counter - KISS_PROTOCOL_LEN + i];
 #ifdef DEBUG_PRINT
-      Serial.print(TestBuf[i]); Serial.print(", ");
+      Serial.print(TestBuf[i]);
+      Serial.print(", ");
 #endif
     }
 #ifdef DEBUG_PRINT
-    Serial.print(" : "); Serial.print(max_time); Serial.print(" : "); Serial.print(micros()-time_start);
+    Serial.print(" : ");
+    Serial.print(max_time);
+    Serial.print(" : ");
+    Serial.print(micros() - time_start);
 #endif
   } else {
 #ifdef DEBUG_PRINT
@@ -145,20 +149,24 @@ void receiveTelemtrie() {
     int16_t current = (TestBuf[3] << 8) | TestBuf[4];
     int16_t rpm = (TestBuf[7] << 8) | TestBuf[8];
     float voltage = (float)((float)volt / 100);
-    server.setTemperature(HOTT_ESC_TEMPERATURE, 20 + TestBuf[0]);
+    int8_t temperature = 20 + TestBuf[0];
+    server.setTemperature(HOTT_ESC_TEMPERATURE, temperature);
     server.setVoltage(HOTT_MAIN_VOLTAGE, voltage);
     server.setCurrent(HOTT_MAIN_CURRENT, (float)((float)current / 100));
     server.setCapacity((TestBuf[5] << 8) | TestBuf[6]);
     server.setRPM(HOTT_PRIMARY_RPM, rpm);
 
 #ifdef DEBUG_PRINT
-  Serial.print(", ");
-  Serial.print(server.getBattAlarmV());
-  Serial.print(", ");
-  Serial.println(voltage);
+    Serial.print(", ");
+    Serial.print(server.getBattAlarmV());
+    Serial.print(", ");
+    Serial.println(voltage);
 #endif
-    if ( voltage < server.getBattAlarmV() ) {
-      server.setWarning(HOTT_ALARM_SENSOR1_VOLTAGE_MIN);
+    if (voltage < server.getBattAlarmV() || temperature > server.getTempAlarmV()) {
+      if (voltage < server.getBattAlarmV())
+        server.setWarning(HOTT_ALARM_SENSOR1_VOLTAGE_MIN);
+      if (temperature < server.getTempAlarmV())
+        server.setWarning(HOTT_ALARM_SENSOR1_TEMP_MAX);
 #ifdef DEBUG_PRINT
       Serial.println("******** ALARM *********");
 #endif

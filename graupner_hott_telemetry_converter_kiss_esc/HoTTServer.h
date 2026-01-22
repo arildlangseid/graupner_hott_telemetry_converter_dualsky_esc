@@ -303,6 +303,7 @@ public:
 	void hottBuildAscii(byte button);
 
 	float getBattAlarmV();
+	int getTempAlarmV();
 
 	void setWarning(HOTTAlarm_e warningID);
 	void setInverted(uint8_t invertedID, uint8_t inverted);

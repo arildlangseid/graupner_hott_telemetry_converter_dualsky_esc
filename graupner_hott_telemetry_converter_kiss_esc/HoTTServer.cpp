@@ -802,6 +802,9 @@ bool HoTTServer::processRequest() {
 float HoTTServer::getBattAlarmV() {
 	return sSettings.battAlarmV;
 }
+int HoTTServer::getTempAlarmV() {
+	return sSettings.tempAlarmC;
+}
 
 void HoTTServer::setWarning(HOTTAlarm_e warningID) {
 	_warningID = warningID;
