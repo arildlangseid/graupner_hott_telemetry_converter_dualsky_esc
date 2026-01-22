@@ -154,6 +154,7 @@ void HoTTServer::hottBuildAscii(byte button) {
 			break;
 		case 0x0D:
 			// INC
+			hottPrint(buttonFeedBackLine, 10, "INC");
 			if (numPolesEdit && sSettings.numPoles < 40) {
 				sSettings.numPoles += 2;
 			} else if (battAlarmEdit && sSettings.battAlarmV < 25.2) {
@@ -161,10 +162,10 @@ void HoTTServer::hottBuildAscii(byte button) {
 			} else if (tempAlarmEdit && sSettings.tempAlarmC < 90) {
 				sSettings.tempAlarmC += 1;
 			} else if (curserPos < 4) curserPos++;
-			hottPrint(buttonFeedBackLine, 10, "INC");
 			break;
 		case 0x0B:
 			// DEC
+			hottPrint(buttonFeedBackLine, 10, "DEC");
 			if (numPolesEdit && sSettings.numPoles > 2) {
 				sSettings.numPoles -= 2;
 			} else if (battAlarmEdit && sSettings.battAlarmV > 3.0) {
@@ -172,7 +173,6 @@ void HoTTServer::hottBuildAscii(byte button) {
 			} else if (tempAlarmEdit && sSettings.tempAlarmC > 10.0) {
 				sSettings.tempAlarmC -= 1;
 			} else if (curserPos > 2) curserPos--;
-			hottPrint(buttonFeedBackLine, 10, "DEC");
 			break;
 		case 0x0E:
 			// ENTER
@@ -180,6 +180,8 @@ void HoTTServer::hottBuildAscii(byte button) {
 			break;
 		case 0x09:
 			// SET
+			hottPrint(buttonFeedBackLine, 10, "SET");
+
 			if (numPolesEdit) {
 				numPolesEdit = false;
 				eeprom_write_block((const void*)&sSettings, (void*)0, sizeof(sSettings));
@@ -207,8 +209,6 @@ void HoTTServer::hottBuildAscii(byte button) {
 				tempAlarmEdit = true;
 				tempAlarmBackupValue = sSettings.tempAlarmC;
 			}
-
-			hottPrint(buttonFeedBackLine, 10, "SET");
 
 			break;
 		case 0x0F:
