@@ -2,7 +2,10 @@
 #include "HoTTServer.h"
 
 HoTTServer::HoTTServer(uint8_t rxPin, uint8_t txPin)
-  : _serialPort(rxPin, txPin) {
+#ifndef USE_HARDWARE_SERIAL
+: _serialPort(rxPin, txPin)
+#endif
+{
 	// define pin modes for tx, rx:
 	pinMode(rxPin, INPUT);
 	pinMode(txPin, OUTPUT);

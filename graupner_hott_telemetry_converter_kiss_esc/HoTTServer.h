@@ -28,11 +28,19 @@
 #define HoTTServer_h
 
 #include "Arduino.h"
-#include "SoftwareSerial.h"
-//#include "HardwareSerial.h"
 
-// Serial used to 
+//#define USE_HARDWARE_SERIAL
+
+
+#ifdef USE_HARDWARE_SERIAL
+	#include "HardwareSerial.h"
+#else
+	#include "SoftwareSerial.h"
+#endif
+
+// Serial used to verify valid eeprom data
 #define SERIAL_NUMBER 123456
+
 
 // Protocoll definitions
 
@@ -203,8 +211,11 @@ class HoTTServer {
 
 private:
 
+#ifdef USE_HARDWARE_SERIAL
+	HardwareSerial &_serialPort = Serial1;
+#else
 	SoftwareSerial _serialPort;
-	//HardwareSerial &_serialPort = Serial1;
+#endif
 
 
 	HOTTAlarm_e _warningID;

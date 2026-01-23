@@ -129,6 +129,7 @@ void receiveTelemtrie() {
     Serial.print(micros() - time_start);
 #endif
   } else {
+/*
 #ifdef DEBUG_PRINT
     Serial.print("Return: ");
     Serial.print(counter);
@@ -136,6 +137,7 @@ void receiveTelemtrie() {
     Serial.print(max_time);
     Serial.println("");
 #endif
+*/
     return;
   }
 
