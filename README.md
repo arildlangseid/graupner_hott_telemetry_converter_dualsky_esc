@@ -1,4 +1,4 @@
-# graupner_hott_telemetry_converter_kiss_esc
+# graupner_hott_telemetry_converter_dualsky_esc
 Arduino converter DualSky/KISS Summit ESC to Graupner HoTT Telemetry
 
 Using Arduino Leonardo (atmega32u) to convert KISS Telemetry from DualSky Summit 60 Slim ESC to Graupner HoTT
