@@ -327,7 +327,7 @@ public:
 	void setFuelPercentage(uint8_t percent);
 	void setFuel(uint16_t fuel);
 	void setTemperature(HOTTTemperature_e temperatureID, int8_t temperature);
-	void setRPM(HOTTRPM_e rpmID, uint16_t rpm);
+	void setRPM(HOTTRPM_e rpmID, uint32_t rpm);
 	void setSpeed(uint16_t speed);
 	void setPressure(float pressure);
 	void setDistance(uint16_t distance);

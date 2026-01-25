@@ -956,7 +956,7 @@ void HoTTServer::setTemperature(HOTTTemperature_e temperatureID, int8_t temperat
 			break;
 	}
 }
-void HoTTServer::setRPM(HOTTRPM_e rpmID, uint16_t rpm) {
+void HoTTServer::setRPM(HOTTRPM_e rpmID, uint32_t rpm) {
 	rpm = constrain(rpm * 100 / (sSettings.numPoles/2), 0, 65535);
 
 	switch (rpmID) {
