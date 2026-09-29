@@ -5,7 +5,7 @@ Using Arduino Leonardo (atmega32u) to convert KISS Telemetry from DualSky Summit
 
 Telemetry-cable from Summit ESC is connected to HardwareSerial Rx (Serial1).
 
-Graupner HoTT Receiver is connected to SoftwareSerial Rx pin D10. Tx pin D11 is connected to D10 via 2k resistor. See HoTTServer.h
+Graupner HoTT Receiver is connected to SoftwareSerial Rx pin D10. Tx pin D9 is connected to D10 via 2k resistor. See HoTTServer.h
 
 Credits and big thanks goes to:
 https://github.com/chriszero/ArduHottSensor
