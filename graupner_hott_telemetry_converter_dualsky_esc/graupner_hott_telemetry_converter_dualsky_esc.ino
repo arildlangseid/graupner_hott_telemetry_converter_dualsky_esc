@@ -67,6 +67,7 @@ void loop() {
 #endif
     server.processRequest();
   }
+
 }
 
 // get the Telemetrie from the ESC
@@ -93,6 +94,11 @@ void receiveTelemtrie() {
       time_since_last = time_now - time_last;
       uint8_t data = dsSerial.read();
       SerialBuf[counter] = data;
+#ifdef DEBUG_PRINT
+      if (data < 16) Serial.print(0);
+      Serial.print(data, HEX);
+      Serial.print(" ");
+#endif
       if (max_time < time_since_last) max_time = time_since_last;
 #ifdef DEBUG_PRINT
 //      Serial.println(max_time);
@@ -113,6 +119,9 @@ void receiveTelemtrie() {
     }
     time_last = time_now;
   }
+#ifdef DEBUG_PRINT
+  Serial.println("");
+#endif
 
   if (counter >= KISS_PROTOCOL_LEN && max_time > KISS_FRAME_MIN && max_time < KISS_FRAME_MAX) {
     for (int i = 0; i < KISS_PROTOCOL_LEN; i++) {

@@ -121,7 +121,7 @@ void HoTTServer::hottBuildAscii(byte button) {
 	// menu-indicator top-right
 	hottPrint(0, 19, "<");
 	// version
-	hottPrint(0, 14, "V0.02");
+	hottPrint(0, 14, "V0.03");
 	// header
 	hottPrint(0, 0, "DUALSKYSUMMIT");
 	// menu
