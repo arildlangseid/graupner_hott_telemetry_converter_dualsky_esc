@@ -62,8 +62,10 @@ void loop() {
   if (unsigned long timeNow = millis() - timeHoTT_update > 200) {
     timeHoTT_update = timeNow;
 #ifdef DEBUG_PRINT
+/*
     capacityCounter++;
     server.setCapacity(capacityCounter);
+*/
 #endif
     server.processRequest();
   }
@@ -153,9 +155,24 @@ void receiveTelemtrie() {
   uint8_t crc8 = get_crc8(TestBuf, 9);  // get the 8 bit CRC
   if (crc8 != 0 && crc8 == TestBuf[9]) {
 #ifdef DEBUG_PRINT
-    Serial.print(", Good");
-//    Serial.println("");
+    for (int p = 0; p < KISS_PROTOCOL_LEN; p++) {
+      Serial.print(TestBuf[p], HEX);
+      Serial.print(" ");
+    }
+    Serial.println("");
 #endif
+    /*
+      Byte 0: Temperature
+      Byte 1: Voltage high byte
+      Byte 2: Voltage low byte
+      Byte 3: Current high byte
+      Byte 4: Current low byte
+      Byte 5: Consumption high byte
+      Byte 6: Consumption low byte
+      Byte 7: Rpm high byte
+      Byte 8: Rpm low byte
+      Byte 9: 8-bit CRC
+    */
     int16_t volt = (TestBuf[1] << 8) | TestBuf[2];
     int16_t current = (TestBuf[3] << 8) | TestBuf[4];
     int16_t rpm = (TestBuf[7] << 8) | TestBuf[8];
