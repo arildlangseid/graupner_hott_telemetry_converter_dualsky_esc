@@ -4,6 +4,9 @@
 	(generator_version "9.0")
 	(uuid "c65704ca-4345-43e9-b217-47b1e9b457f7")
 	(paper "A5")
+	(title_block
+		(title "Dualsky ESC Summit (KISS) telemetry to HoTT converter")
+	)
 	(lib_symbols
 		(symbol "Connector:Conn_01x01_Pin"
 			(pin_names
@@ -1319,7 +1322,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "389ae92e-095e-4a19-9a27-c0200cb2d920")
 		(property "Reference" "A1"
 			(at 113.9033 30.48 0)
@@ -1330,8 +1332,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Arduino_Leonardo"
-			(at 113.9033 33.02 0)
+		(property "Value" "Arduino Pro Micro (ATMega32u)"
+			(at 104.902 28.194 0)
 			(effects
 				(font
 					(size 1.27 1.27)
